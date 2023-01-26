@@ -34,6 +34,17 @@ DEBUG = bool(env('DEBUG'))
 
 ALLOWED_HOSTS = ["*"]
 
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "postgres",
+        "USER": "postgres",
+        "PASSWORD": "postgres",
+        "HOST": "db",  # set in docker-compose.yml
+        "PORT": 5432,  # default postgres port
+    }
+}
+
 
 # Application definition
 
@@ -44,10 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'blockchains',
-    # 'arb',
     'django.contrib.humanize',
-    'osmosis',
     'terra_classic',
 ]
 
@@ -66,7 +74,7 @@ ROOT_URLCONF = 'dashboard_site.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates', '/home/ubuntu/mev-frp-dashboard/dashboard_site/templates'],
+        'DIRS': [BASE_DIR / 'templates', '/code/dashboard_site/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -81,10 +89,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'dashboard_site.wsgi.application'
 
-# drop database frp_mev_terra; create database frp_mev_terra; create role frp_mev_terra__user WITH LOGIN PASSWORD  ''; grant all privileges on database frp_mev_terra to frp_mev_terra__user;
-DATABASES = {
-    'default': env.db(),
-}
 
 
 
@@ -171,7 +175,4 @@ else:
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-OSMOSIS_RPC_URL=env('OSMOSIS_RPC_URL')
-OSMOSIS_LCD_URL=env('OSMOSIS_LCD_URL')
-OSMOSIS_DECODER_BIN_FN=env('OSMOSIS_DECODER_BIN_FN')
-
+ 
