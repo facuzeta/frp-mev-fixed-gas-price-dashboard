@@ -1,0 +1,173 @@
+{% extends "./base.html" %}
+{% load humanize %}
+{% load static %}
+{% block content %}
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">{{header}}</h1>
+</div>
+
+<div class="row">
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            $ Txs </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {% if flag_more_than_limit %}
+                                > {{limit}}
+                            {% else %}
+                                {{txs|length}}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-hashtag fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            # Success {% if flag_more_than_limit %}*{% endif %}  </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {{n_success|intword}}
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-hashtag fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Revenue
+                            UST {% if flag_more_than_limit %}*{% endif %}
+
+                        </div>
+                        <div class="row no-gutters align-items-center">
+                            <div class="col-auto">
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                    {{revenue_ust|floatformat:2}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Revenue
+                            LUNA {% if flag_more_than_limit %}*{% endif %}
+                        </div>
+                        <div class="row no-gutters align-items-center">
+                            <div class="col-auto">
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                    {{revenue_luna|floatformat:2}}</div>
+                            </div>
+                            <div class="col">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% if flag_more_than_limit %} * over the first {{limit}} transactions {% endif %}
+<br>
+<br>
+
+
+
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4" id="timelines">
+    <h1 class="h3 mb-0 text-gray-800">Txs</h1>
+</div>
+
+
+<div class="row">
+
+    <div class="col-xl-12 col-lg-12">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <div class="table-responsive">
+
+                    <table class="table" id='table'>
+                        <thead>
+                            <tr>
+                                <th scope="col">Block</th>
+                                <th scope="col">Hash</th>
+                                <th scope="col">Contract</th>
+                                <th scope="col">Tx success</th>
+                                <th scope="col">Arb</th>
+                                <th></th>
+
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for tx in txs %}
+                            <tr>
+                                <td>{{tx.block_id}}</td>
+                                <td>
+                                    {% if tx.arb_set.all %}
+                                    <a href="/terra-classic/tx/{{tx.hash}}">{{tx.clean_hash}}</a>
+                                    {% else %}
+                                    {{tx.clean_hash}}
+                                    {% endif %}
+                                </td>
+                                <td><a href="/terra-classic/contract/{{tx.contract}}">{{tx.clean_contract}}</a></td>
+                                <td>{{tx.success}}</td>
+                                <td>
+                                    {% if tx.arb_set.all %}
+                                    {{tx.arb_set.all.0.profit}} {{tx.arb_set.all.0.token_in}}
+                                    {% else %} -
+                                    {% endif %}</td>
+                                <td> <a href="https://finder.terra.money/classic/tx/{{tx.hash}}" target="_blank">Finder
+                                        link</a> </td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#table').DataTable();
+    });
+</script>
+
+{% endblock %}

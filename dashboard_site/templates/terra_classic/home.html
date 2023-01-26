@@ -1,0 +1,743 @@
+{% extends "./base.html" %}
+{% load humanize %}
+{% load static %}
+
+{% block sidebar %}
+
+<!-- Sidebar -->
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <li class="nav-item">
+        <div class="nav-link">
+            TERRA CLASSIC
+        </div>
+    </li>
+    <br>
+    <br>
+    <br>
+    <li class="nav-item">
+        <a class="nav-link" href="#timelines">
+            <i class="fas fa-fw"></i>
+            <span>Timelines</span>
+        </a>
+    </li>
+    <hr class="sidebar-divider">
+    <div class="sidebar-heading">
+        Arbitrage
+    </div>
+
+    <li class="nav-item">
+        <a class="nav-link" href="#profit_over_time">
+            <i class="fas fa-fw"></i>
+            <span>Profit over time</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="#tokens">
+            <i class="fas fa-fw"></i>
+            <span>Tokens</span>
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="#pools">
+            <i class="fas fa-fw"></i>
+            <span>Pools</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#amount_in_ust">
+            <i class="fas fa-fw"></i>
+            <span>Amount in UST</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#amount_in_luna">
+            <i class="fas fa-fw"></i>
+            <span>Amount in LUNA</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#profit_ust">
+            <i class="fas fa-fw"></i>
+            <span>Profit in UST</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#profit_luna">
+            <i class="fas fa-fw"></i>
+            <span>Profit in LUNA</span>
+        </a>
+    </li>
+    <hr class="sidebar-divider">
+    <li class="nav-item">
+        <a class="nav-link" href="#about_this_project">
+            <i class="fas fa-fw"></i>
+            <span>About this project</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#limitations">
+            <i class="fas fa-fw"></i>
+            <span>Limitations</span>
+        </a>
+    </li>
+</ul>
+<!-- End of Sidebar -->
+{% endblock %}
+
+
+{% block content %}
+
+
+<!-- Page Heading -->
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Summary</h1>
+    <p>Data from Terra Classic blockchain from 2021-09-30 to 2022-05-07</p>
+
+</div>
+
+<!-- Content Row -->
+<div class="row">
+
+    <!-- Earnings (Monthly) Card Example -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Number of Txs </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {{monitor.n_txs|intword}}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-hashtag fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Earnings (Monthly) Card Example -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Number of Arbs</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {{monitor.n_arb|intword}}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-hashtag fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Earnings (Monthly) Card Example -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Profit
+                            UST
+                        </div>
+                        <div class="row no-gutters align-items-center">
+                            <div class="col-auto">
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                    {{monitor.arb_profit_ust|intword}}</div>
+                            </div>
+                            <!-- <div class="col">
+                                                    <div class="progress progress-sm mr-2">
+                                                        <div class="progress-bar bg-info" role="progressbar"
+                                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+                                                            aria-valuemax="100"></div>
+                                                    </div>
+                                                </div> -->
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Earnings (Monthly) Card Example -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Profit
+                            LUNA
+                        </div>
+                        <div class="row no-gutters align-items-center">
+                            <div class="col-auto">
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                    {{monitor.arb_profit_luna|intword}}</div>
+                            </div>
+                            <div class="col">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4" id="timelines">
+    <h1 class="h3 mb-0 text-gray-800">Timelines</h1>
+</div>
+
+<!-- Content Row -->
+
+<div class="row">
+
+    <!-- Area Chart -->
+    <div class="col-xl-6 col-lg-6">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Number of transactions over time
+                </h6>
+                <!-- <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                            aria-labelledby="dropdownMenuLink">
+                                            <div class="dropdown-header">Dropdown Header:</div>
+                                            <a class="dropdown-item" href="#">Action</a>
+                                            <a class="dropdown-item" href="#">Another action</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">Something else here</a>
+                                        </div>
+                                    </div> -->
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+                <div class="">
+                    {{fig_tx_timeseries.fig_n_txs_exec|safe}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="col-xl-6 col-lg-6">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Number of arbitrages over time
+                </h6>
+                <!-- <div class="dropdown no-arrow">
+                                        <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
+                                            aria-labelledby="dropdownMenuLink">
+                                            <div class="dropdown-header">Dropdown Header:</div>
+                                            <a class="dropdown-item" href="#">Action</a>
+                                            <a class="dropdown-item" href="#">Another action</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item" href="#">Something else here</a>
+                                        </div>
+                                    </div> -->
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+                <div class="">
+                    {{fig_tx_timeseries.fig_n_arbs|safe}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4" id="profit_over_time">
+    <h1 class="h3 mb-0 text-gray-800">Arbitrage - Profit over time</h1>
+</div>
+
+<div class="row">
+
+    <!-- Area Chart -->
+    <div class="col-xl-6 col-lg-6">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Profit of arbitrage transactions that
+                    start with UST
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="">
+                    {{fig_arb_timesieries.arb_profit_intime_ust|safe}}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="col-xl-6 col-lg-6">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Profit of arbitrage transactions that
+                    start with LUNA
+                </h6>
+
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+                <div class="">
+                    {{fig_arb_timesieries.arb_profit_intime_luna|safe}}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4" id="tokens">
+    <h1 class="h3 mb-0 text-gray-800">Arbitrage - Tokens</h1>
+</div>
+
+
+<div class="row">
+
+    <div class="col-xl-6 col-lg-6">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Start tokens</h6>
+
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+                <p>Token used to start the arbitrage cycle</p>
+
+                <div class="">
+                    {{fig_disfig_distribution__token_in_start_arb_html| safe}}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-xl-6 col-lg-6">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Tokens used</h6>
+
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+                <p>Tokens used in Arbitrage paths</p>
+                <div class="">
+                    {{fig_disfig_distribution__tokens_arb_html|safe}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4" id="pools">
+    <h1 class="h3 mb-0 text-gray-800">Arbitrage - Pools</h1>
+</div>
+
+
+<div class="row">
+
+    <div class="col-xl-12 col-lg-12">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Distribution of pools</h6>
+
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+                <p>Pools used in the arbitrage cycles</p>
+                <div class="">
+                    {{fig_distribution__pools_html|safe}}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4" id="amount_in_ust">
+    <h1 class="h3 mb-0 text-gray-800">Arbitrage - Amount in - Transactions that start with UST</h1>
+</div>
+
+
+<div class="row">
+
+    <div class="col-xl-6 col-lg-6">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Distribution of Amount In values</h6>
+
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+                <p>Amount used in arbitrage that started with UST</p>
+
+
+                <div class="">
+                    {{fig_distribution__amount_in_html__ust| safe}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-xl-6 col-lg-6">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Transactions' ranking</h6>
+
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Amount (in UST)</th>
+                            <th scope="col">Tx hash</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for r in fig_distribution__amount_in_ust_top10 %}
+                        <tr>
+                            <td>{{r.Amount|intcomma}}</td>
+                            <td><a href="/terra-classic/tx/{{r.txhash}}"
+                                    target="_blank">{{r.txhash|slice:":8"}}...{{r.txhash|slice:"56:"}}</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4" id="amount_in_luna">
+    <h1 class="h3 mb-0 text-gray-800">Arbitrage - Amount in - Transactions that start with LUNA</h1>
+</div>
+<div class="row">
+
+    <div class="col-xl-6 col-lg-6">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Distribution of Amount In values</h6>
+
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+                <p>
+                    Amount used in arbitrage that started with LUNA
+                </p>
+
+
+                <div class="">
+                    {{fig_distribution__amount_in_html__luna| safe}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-xl-6 col-lg-6">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Transactions' ranking</h6>
+
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Amount (in LUNA)</th>
+                            <th scope="col">Tx hash</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for r in fig_distribution__amount_in_luna_top10 %}
+                        <tr>
+                            <td>{{r.Amount|intcomma}}</td>
+                            <td><a href="/terra-classic/tx/{{r.txhash}}"
+                                    target="_blank">{{r.txhash|slice:":8"}}...{{r.txhash|slice:"56:"}}</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4" id="profit_ust">
+    <h1 class="h3 mb-0 text-gray-800">Arbitrage - Profit - Transactions that start with UST</h1>
+</div>
+
+<div class="row">
+
+    <div class="col-xl-6 col-lg-6">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Distribution of Profit</h6>
+
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+                <p>
+                    Profit in arbitrage that start with UST
+                </p>
+
+
+                <div class="">
+                    {{fig_distribution__profit_html__ust| safe}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-xl-6 col-lg-6">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Transactions' ranking</h6>
+
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Profit (in UST)</th>
+                            <th scope="col">Tx hash</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for r in fig_distribution__profit_ust_top10 %}
+                        <tr>
+                            <td>{{r.Profit|intcomma}}</td>
+                            <td><a href="/terra-classic/tx/{{r.txhash}}"
+                                    target="_blank">{{r.txhash|slice:":8"}}...{{r.txhash|slice:"56:"}}</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4" id="profit_luna">
+    <h1 class="h3 mb-0 text-gray-800">Arbitrage - Profit - Transactions that start with LUNA</h1>
+</div>
+
+<div class="row">
+
+    <div class="col-xl-6 col-lg-6">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Distribution of Profit</h6>
+
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+                <p>
+                    Profit in arbitrage that start with LUNA
+                </p>
+
+
+                <div class="">
+                    {{fig_distribution__profit_html__luna| safe}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-xl-6 col-lg-6">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Transactions' ranking</h6>
+
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Profit (in LUNA)</th>
+                            <th scope="col">Tx hash</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for r in fig_distribution__profit_luna_top10 %}
+                        <tr>
+                            <td>{{r.Profit|intcomma}}</td>
+                            <td><a href="/terra-classic/tx/{{r.txhash}}"
+                                    target="_blank">{{r.txhash|slice:":8"}}...{{r.txhash|slice:"56:"}}</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<div class="row">
+    <div class="col-xl-12 col-lg-12">
+
+        <div class="card shadow mb-4" id="about_this_project">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">About this project</h6>
+            </div>
+            <div class="card-body">
+                <p>
+                    <b>MEV in fixed gas price blockchains</b>.
+                    <a href="https://github.com/flashbots/mev-research/blob/main/FRPs/active/FRP-21.md"
+                        target="_blank">Link
+                        to project description</a>
+                </p>
+
+                <p><b>Background and Problem Statement</b></p>
+                <p>As we know, MEV has been extensively studied [1], from mathematical models to data
+                    analysis applications. In most scientific papers, researchers have worked with the
+                    Ethereum blockchain almost exclusively, so extending results to other blockchains
+                    might not be trivial. Understandably, one of the most particular aspects that makes
+                    it so complex is Gas bidding.</p>
+                <p>In Ethereum, the miners pick up transactions from the mempool and propose a block
+                    with a subset of transactions in an arbitrary order. However, this arbitrary order
+                    is not random; many miners use gas to sort transactions and create new blocks since
+                    this strategy maximizes their reward. But this is not the case for all blockchains.
+                    Blockchains based on Tendermint don't take dynamic gas prices into account to
+                    prioritize transactions. They use a fixed gas price and process transactions in the
+                    same order in which the validators receive them. This difference could heavily
+                    impact the role and behavior of MEV searchers. In Blockchains with fixed gas prices,
+                    the only resource that searchers have is to recognize an MEV opportunity before
+                    other actors and respond quickly enough. This contrast could have enormous
+                    repercussions on the opportunities that MEV searchers choose to pursue. For example:
+                    What strategy do non-privileged actors use to front-run a transaction if they could
+                    not offer a higher gas price to allocate their transaction earlier in the block?</p>
+                <p>We believe the blockchains that don't use gas to prioritize transactions present MEV
+                    opportunities with their own different dynamics. As we have previously mentioned,
+                    even though MEV has been extensively studied (market designs and their implications
+                    [2], MEV in other Blockchains [3], among others), to our knowledge, there is not a
+                    full understanding of MEV in Blockchains with fixed gas price mechanisms. Therefore,
+                    we propose the following general objective of this FRP: To study the MEV
+                    opportunities in a blockchain using a fixed gas price. To contribute to this general
+                    object, we propose to study this in Terra blockchains.</p>
+                </p>
+                <br>
+                <b>References</b>
+                <li>[1] Daian, Philip, et al. "Flash boys 2.0: Frontrunning in decentralized exchanges,
+                    miner extractable value, and consensus instability." 2020 IEEE Symposium on Security
+                    and Privacy (SP). IEEE, 2020.</li>
+                <li>[2] Why your blockchain needs an MEV solution - Hasu (Flashbots)</li>
+                <li>
+                    [3] A brief Survey of MEV on Ethereum, BSC, Avalanche and Polygon in 2021 - Alex
+                    Obadia (Flashbots)
+                </li>
+                <li>[4] https://explore.flashbots.net/</li>
+
+                </p>
+
+                <p>
+                    This project was developed in the context
+                    of the <a href="https://github.com/flashbots/mev-research" target="_blank">Flashbot
+                        Research Proposal program</a>.
+
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-12 col-lg-12">
+        <div class="card shadow mb-4" id="limitations">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Limitations and considerations</h6>
+            </div>
+            <div class="card-body">
+                <p>
+                    <li>1. Only arbitrage transactions that start with UST or LUNA are considered in the profit
+                        calculation.</li>
+                    <li>2. Profit calculation doesn't take into account the gas used by the transaction</li>
+                    <li>3. Computation of arbitrage is performed reading transactions' logs, I you find any problem,
+                        please let us know!</li>
+                    <li>4. Data will be available to download soon!</li>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

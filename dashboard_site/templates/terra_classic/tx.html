@@ -1,0 +1,256 @@
+{% extends "./base.html" %}
+{% load humanize %}
+{% load static %}
+{% block content %}
+
+<div class="row">
+
+    <!-- Earnings (Monthly) Card Example -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Token in </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {{arb.token_in}}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-hashtag fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Earnings (Monthly) Card Example -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Amount In</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            {{amount_in|intword}}
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-hashtag fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Earnings (Monthly) Card Example -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Profit
+
+                        </div>
+                        <div class="row no-gutters align-items-center">
+                            <div class="col-auto">
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                    {{profit|intword}}
+                                </div>
+                            </div>
+                            <!-- <div class="col">
+                                                    <div class="progress progress-sm mr-2">
+                                                        <div class="progress-bar bg-info" role="progressbar"
+                                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+                                                            aria-valuemax="100"></div>
+                                                    </div>
+                                                </div> -->
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Earnings (Monthly) Card Example -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Profit
+                            Rate
+
+                        </div>
+                        <div class="row no-gutters align-items-center">
+                            <div class="col-auto">
+                                <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                    {{arb.profit_rate|floatformat:2}}</div>
+                            </div>
+                            <div class="col">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4" id="timelines">
+    <h1 class="h3 mb-0 text-gray-800">Tx Info</h1>
+</div>
+
+<!-- Content Row -->
+<div class="row">
+
+    <!-- Area Chart -->
+    <div class="col-xl-12 col-lg-12">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <!-- <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Number of transactions over time
+                                    </h6>
+
+                                </div> -->
+            <!-- Card Body -->
+            <div class="card-body">
+                <div class="table-responsive">
+
+                    <table class="table">
+                        <thead>
+
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <th scope="col">Hash</th>
+                                <td>{{arb.tx_id}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Timeline</th>
+                                <td>{{arb.timestamp}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Block</th>
+                                <td><a target="_blank" href="/terra-classic/block/{{arb.tx.block.height}}">{{arb.tx.block.height}}</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Execute Msg</th>
+                                <td>{{arb.tx.execute_msg}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Sender</th>
+                                <td><a target="_blank" href="/terra-classic/sender/{{arb.tx.sender}}">{{arb.tx.sender}}</a></td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Contract</th>
+                                <td><a target="_blank" href="/terra-classic/contract/{{arb.tx.contract}}">{{arb.tx.contract}}</a></td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Fee</th>
+                                <td>{{arb.tx.fee}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Fee token</th>
+                                <td>{{arb.tx.fee_token}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Memo</th>
+                                <td>{{arb.tx.memo}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Gas wanted</th>
+                                <td>{{arb.tx.gas_wanted}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Gas used</th>
+                                <td>{{arb.tx.gas_used}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Link finder</th>
+                                <td><a target="_blank"
+                                        href="https://finder.terra.money/classic/tx/{{arb.tx_id}}">{{arb.tx_id}}</a>
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4" id="timelines">
+    <h1 class="h3 mb-0 text-gray-800">Cycle</h1>
+</div>
+
+
+<div class="row">
+
+    <!-- Area Chart -->
+    <div class="col-xl-12 col-lg-12">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <!-- <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Number of transactions over time
+                                    </h6>
+
+                                </div> -->
+            <!-- Card Body -->
+            <div class="card-body">
+                <div class="table-responsive">
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col">Pair</th>
+                                <th scope="col">Token in</th>
+                                <th scope="col">Token out</th>
+                                <th scope="col">Amount in</th>
+                                <th scope="col">Amount out</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for r in cycle %}
+                            <tr>
+                                <td>{{ forloop.counter }} </td>
+                                <td>{{r.pair}}</td>
+                                <td>{{r.token_in}}</td>
+                                <td>{{r.token_out}}</td>
+                                <td>{{r.amount_in}}</td>
+                                <td>{{r.amount_out}}</td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+{% endblock %}
