@@ -13,9 +13,13 @@ python manage.py migrate;
 python manage.py createcachetable;
 ```
 
-3. Populate data
+3. get and populate the small data
 ```bash
+mkdir -p /code/small_data/;
 cd /code/small_data/;
+wget https://frp-terra.s3.us-east-2.amazonaws.com/subset_small/terra_classic_dump_blocks.csv;
+wget https://frp-terra.s3.us-east-2.amazonaws.com/subset_small/terra_classic_dump_arbs.csv;
+wget https://frp-terra.s3.us-east-2.amazonaws.com/subset_small/terra_classic_dump_txs.csv.zip;
 unzip terra_classic_dump_txs.csv.zip;
 psql postgres://postgres:postgres@db:5432/postgres;
 ```
