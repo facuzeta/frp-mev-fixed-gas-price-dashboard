@@ -1,0 +1,33 @@
+import json
+from django.core.management.base import BaseCommand, CommandError
+from osmosis.models import *
+from osmosis.services_download_and_parse_data import get_data_and_populate, get_last_height_on_chain
+from tqdm import tqdm
+from django.utils import timezone
+
+# last hour should have ~ 600 blocks
+MAX_BLOCKS_TO_PUSH = 1000
+
+class Command(BaseCommand):
+    help = 'Get data from rcp and lcd and push data to db'
+
+    def handle(self, *args, **options):
+
+        last_block_on_chain = get_last_height_on_chain()
+        last_height_on_chain = int(last_block_on_chain['height'])
+        last_time_on_chain = str(last_block_on_chain['time'])
+
+        last_block_we_have = Block.objects.all().order_by('-height').first()
+
+        self.stdout.write(str(timezone.now())+'\t Current block on chain: '+str(last_height_on_chain)+'\t'+str(last_time_on_chain))
+        self.stdout.write(str(timezone.now())+'\t Current last block we have: '+str(last_block_we_have.height)+'\t'+str(last_block_we_have.timestamp))
+
+        for height in tqdm(range(last_block_we_have.height+1, last_height_on_chain)[-MAX_BLOCKS_TO_PUSH:]):
+            self.stdout.write(str(timezone.now())+'\t'+str(height))
+            res = get_data_and_populate(height)
+        if 'status' not in res:
+            self.stdout.write(json.dumps({'status': 'error'}))
+        else:
+            self.stdout.write(json.dumps(res))
+
+
