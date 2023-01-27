@@ -22,12 +22,15 @@ class Command(BaseCommand):
         self.stdout.write(str(timezone.now())+'\t Current block on chain: '+str(last_height_on_chain)+'\t'+str(last_time_on_chain))
         self.stdout.write(str(timezone.now())+'\t Current last block we have: '+str(last_block_we_have.height)+'\t'+str(last_block_we_have.timestamp))
 
-        for height in tqdm(range(last_block_we_have.height+1, last_height_on_chain)[-MAX_BLOCKS_TO_PUSH:]):
+        for height in tqdm(range(last_height_on_chain, last_block_we_have.height+1, -1)[:MAX_BLOCKS_TO_PUSH]):
             self.stdout.write(str(timezone.now())+'\t'+str(height))
-            res = get_data_and_populate(height)
-        if 'status' not in res:
-            self.stdout.write(json.dumps({'status': 'error'}))
-        else:
-            self.stdout.write(json.dumps(res))
-
+            try:
+                res = get_data_and_populate(height)
+                if 'status' not in res:
+                    self.stdout.write(json.dumps({'status': 'error'}))
+                else:
+                    self.stdout.write(json.dumps(res))
+            except Exception as e:
+                self.stdout.write(str(e))
+                self.stdout.write(json.dumps({'status': 'error', 'msg': str(e)}))
 
