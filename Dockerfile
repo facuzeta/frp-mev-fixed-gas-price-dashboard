@@ -30,4 +30,4 @@ RUN /code/tools_decoder_tx_osmosis/script_install_go_decoder.sh
 # add to crontab the script that get osmosis data every hour
 COPY run_script_per_hour_cron.sh .
 RUN /code/run_script_per_hour_cron.sh
-RUN service cron start
+CMD ["service", "cron", "start"]

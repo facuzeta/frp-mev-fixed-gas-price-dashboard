@@ -1,1 +1,1 @@
-(crontab -l ; echo "27 * * * * /usr/local/bin/python /code/dashboard_site/manage.py push_blocks_last_hour") | sort - | uniq - | crontab -
+(crontab -l ; echo "0 * * * * /usr/local/bin/python /code/dashboard_site/manage.py push_blocks_last_hour") | sort - | uniq - | crontab -
