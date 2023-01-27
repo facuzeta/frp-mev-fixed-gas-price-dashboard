@@ -4,8 +4,6 @@ services:
   web:
     build: .
     command: python /code/dashboard_site/manage.py runserver 0.0.0.0:8000
-    volumes:
-      - .:/code
     ports:
       - 8000:8000
     depends_on:

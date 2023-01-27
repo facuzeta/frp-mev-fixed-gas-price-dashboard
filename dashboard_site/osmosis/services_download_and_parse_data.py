@@ -288,10 +288,16 @@ class LocalBlock():
         self.gas_wanted_fail_arb_txs = sum([tx.gas_wanted for tx in txs if any(tx.are_arb) and not tx.success])
         self.profits = [p for tx in txs if len(tx.profits)>0 for p in tx.profits if 'denom' in p and p['denom']!='']
 
+
+def get_allthatnode_apikey_header():
+    headers = {}
+    if settings.ALLTHATNODE_APIKEY is not None:
+        headers = {'x-allthatnode-api-key': settings.ALLTHATNODE_APIKEY}
+    return headers
+
 # download the data and create localStructu to populate the db
 def get_local_block(height):
-    headers = {'x-allthatnode-api-key': settings.ALLTHATNODE_APIKEY}
-
+    headers = get_allthatnode_apikey_header()
     # get data from lcd:
     # 1. hash
     # 2. parse tx
@@ -321,6 +327,6 @@ def get_local_block(height):
 
 
 def get_last_height_on_chain():
-    headers = {'x-allthatnode-api-key': settings.ALLTHATNODE_APIKEY}
+    headers = get_allthatnode_apikey_header()
     data = requests.get(f'{settings.OSMOSIS_LCD_URL}/blocks/latest', headers=headers).json()
     return data['block']['header']

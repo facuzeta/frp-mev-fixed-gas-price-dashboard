@@ -1,3 +1,4 @@
+cd /code/tools_decoder_tx_osmosis;
 
 # get go and install go
 rm go1.19.5.linux-amd64.tar.gz;

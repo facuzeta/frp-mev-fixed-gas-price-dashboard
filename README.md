@@ -12,7 +12,11 @@ SECRET_KEY='qflfdt^7lufhf2+zyt6lwvvwlbyd#unv$m2j+xyo#4u&%(#-_b'
 
 3. Populate data: follow instruction from https://github.com/facuzeta/frp-mev-fixed-gas-price-tools/blob/main/populate_data.md
 
-4. Check http://localhost:8000/ 
+4. Compile osmosis decoder
+
+5. Check http://localhost:8000/ 
+
+
 ## TODO:
 
 1. Add apache or nginx for production environment (right now is running with runserver)

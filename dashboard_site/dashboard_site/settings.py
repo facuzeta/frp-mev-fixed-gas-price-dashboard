@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'osmosis',
     'terra_classic',
 ]
 
@@ -174,5 +175,7 @@ else:
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
- 
+OSMOSIS_RPC_URL=env('OSMOSIS_RPC_URL')
+OSMOSIS_LCD_URL=env('OSMOSIS_LCD_URL')
+OSMOSIS_DECODER_BIN_FN=env('OSMOSIS_DECODER_BIN_FN')
+ALLTHATNODE_APIKEY=env('ALLTHATNODE_APIKEY', default=None)
