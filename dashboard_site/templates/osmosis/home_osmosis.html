@@ -1,0 +1,1098 @@
+{% extends "./base_osmosis.html" %}
+{% load humanize %}
+{% load static %}
+
+
+
+{% block content %}
+
+<style>
+    .contrainer_tab{
+            display: none;
+    }
+
+</style>
+<script>
+
+    function show_tab(e){
+        $('.buttons_tabs').css( 'background-color', 'transparent' );
+        $('.buttons_tabs').css( 'color', '#4e73df' );
+
+        $('.container_tabs').hide();
+        $('#container_'+e).show();
+        $('#button_'+e).css( 'background-color', '#4e73df' );
+        $('#button_'+e).css( 'color', 'white' );
+
+    }    
+</script>
+
+
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h2 class="h2 mb-0 text-gray-800">Summary</h2>
+    <p>Last block height: {{last_height}} - {{last_timestamp}}</p>
+</div>
+
+<div class="row">
+    <div class="col-xl-12 col-md-12 mb-12">
+        {{mev_diary_figure|safe}}
+    </div>
+    {% comment %} <div class="col-xl-4 col-lg-4">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Last hour</h6>
+            </div>
+            <!-- Card Body -->
+            <div class="card-body" style="margin:auto;text-align:center">
+                <div class="h5 mb-0 font-weight-bold text-gray-800"> {{last_hour.number_of_txs|intword}}</div>
+                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">#TXS</div><br><br>
+                <div class="h5 mb-0 font-weight-bold text-gray-800"> {{last_hour.number_of_arb_successful|intword}}</div>
+                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Successful arbs</div><br><br>
+                <div class="h5 mb-0 font-weight-bold text-gray-800"> {{last_hour.profits_summary.OSMO|floatformat:0}}</div>
+                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Extracted OSMO</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-4 col-lg-4">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Last day</h6>
+            </div>
+            <!-- Card Body -->
+            <div class="card-body" style="margin:auto;text-align:center">
+                <div class="h5 mb-0 font-weight-bold text-gray-800"> {{last_day.number_of_txs|intword}}</div>
+                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">#TXS</div><br><br>
+                <div class="h5 mb-0 font-weight-bold text-gray-800"> {{last_day.number_of_arb_successful|intword}}</div>
+                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Successful arbs</div><br><br>
+                <div class="h5 mb-0 font-weight-bold text-gray-800"> {{last_day.profits_summary.OSMO|floatformat:0}}</div>
+                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Extracted OSMO</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-lg-4">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Last month</h6>
+            </div>
+            <!-- Card Body -->
+            <div class="card-body" style="margin:auto;text-align:center">
+                <div class="h5 mb-0 font-weight-bold text-gray-800"> {{last_month.number_of_txs|intword}}</div>
+                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">#TXS</div><br><br>
+                <div class="h5 mb-0 font-weight-bold text-gray-800"> {{last_month.number_of_arb_successful|intword}}</div>
+                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Successful arbs</div><br><br>
+                <div class="h5 mb-0 font-weight-bold text-gray-800"> {{last_month.profits_summary.OSMO|floatformat:0}}</div>
+                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Extracted OSMO</div>
+            </div>
+        </div>
+    </div> {% endcomment %}
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a class="nav-link buttons_tabs" aria-current="page"  id="button_last_hour" href="javascript:show_tab('last_hour')">Last hour</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link buttons_tabs" id="button_last_day" href="javascript:show_tab('last_day')">Last 24 hours</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link buttons_tabs" id="button_last_month" href="javascript:show_tab('last_month')">Last 30 days</a>
+    </li>
+</ul>
+
+
+
+<br>
+<div id='container_last_hour' class='container_tabs'>
+
+
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h5 class="h5 mb-0 text-gray-800">Amounts</h5>
+    </div>
+
+    <div class="row" id='last_hour__amounts'>
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                # Txs </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{last_hour.number_of_txs|intword}}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-hashtag fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                # Swaps no Arbs</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{last_hour.number_of_txs_with_swaps_no_arbs|intword}}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-hashtag fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                # Successful Arbs
+                            </div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                        {{last_hour.number_of_arb_successful|intword}}
+                                    </div>
+                                </div>
+                                <!-- <div class="col">
+                                                    <div class="progress progress-sm mr-2">
+                                                        <div class="progress-bar bg-info" role="progressbar"
+                                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+                                                            aria-valuemax="100"></div>
+                                                    </div>
+                                                </div> -->
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-hashtag fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                # Failed Arbs
+                            </div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                        {{last_hour.number_of_arb_failed|intword}}
+                                    </div>
+                                </div>
+                                <div class="col">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-hashtag fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="d-sm-flex align-items-center justify-content-between mb-4" id="last_hour__gas">
+        <h5 class="h5 mb-0 text-gray-800">Gas wanted</h5>
+    </div>
+
+    <div class="row">
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Total </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{last_hour.gas_wanted_total|intword}}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-gas-pump fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Swaps no Arbs</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{last_hour.gas_wanted_total_swaps_no_arb|intword}}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-gas-pump fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Successful Arbs
+                            </div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                        {{last_hour.gas_wanted_arb_successful|intword}}
+                                    </div>
+                                </div>
+                                <!-- <div class="col">
+                                                    <div class="progress progress-sm mr-2">
+                                                        <div class="progress-bar bg-info" role="progressbar"
+                                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+                                                            aria-valuemax="100"></div>
+                                                    </div>
+                                                </div> -->
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-gas-pump fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                Failed Arbs
+                            </div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                        {{last_hour.gas_wanted_arb_failed|intword}}
+                                    </div>
+                                </div>
+                                <div class="col">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-gas-pump fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="d-sm-flex align-items-center justify-content-between mb-4" id="last_hour__profit">
+        <h5 class="h5 mb-0 text-gray-800">Profits</h5>
+    </div>
+
+    {% if last_hour.profits_fig %}
+    <div class="row">
+        <div class="col-xl-12 col-lg-12">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <!-- <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Profits</h6>
+            </div> -->
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="">
+                        {{last_hour.profits_fig|safe}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    {% endif %}
+
+    {% if last_hour.profit_ranking %}
+
+    <div class="row">
+
+        <div class="col-xl-12 col-lg-12">
+            <div class="card shadow mb-12">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Arbs' ranking</h6>
+
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <table class="table" id="ranking">
+                        <thead>
+                            <tr>
+                                <th scope="col">Ranking</th>
+                                <th scope="col">Tx hash</th>
+                                <th scope="col">Profit</th>
+                                <th scope="col">Sender</th>
+                                <th scope="col">Time</th>
+                                <th scope="col">Block</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for sm in last_hour.profit_ranking %}
+                            <tr>
+                                <td>{{forloop.counter}}</td>
+                                <td><a href="/osmosis/tx/{{sm.tx.hash}}" target="_blank">{{sm.tx.clean_hash}}</a>
+                                </td>
+                                <td>
+                                    {{sm.get_profit_amount_normalized|floatformat:2}}
+                                    {{sm.get_profimit_denom_normalized|slice:8}}
+                                </td>
+                                <td>
+                                    {{sm.clean_sender}}
+                                </td>
+                                <td>
+                                    {{sm.tx.block.long_ago}}
+                                </td>
+                                <td>
+                                    <a href="/osmosis/block/{{sm.tx.block.height}}" target="_blank">{{sm.tx.block.height}}</a>
+                                </td>
+
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+
+<div id='container_last_day' class='container_tabs' style="display: none">
+
+    <div class="d-sm-flex align-items-center justify-content-between mb-4" id="last_day__amounts">
+        <h5 class="h5 mb-0 text-gray-800">Amounts</h5>
+    </div>
+
+    <div class="row">
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                # Txs </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{last_day.number_of_txs|intword}}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-hashtag fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                # Swaps no Arbs</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{last_day.number_of_txs_with_swaps_no_arbs|intword}}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-hashtag fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                # Successful Arbs
+                            </div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                        {{last_day.number_of_arb_successful|intword}}
+                                    </div>
+                                </div>
+                                <!-- <div class="col">
+                                                    <div class="progress progress-sm mr-2">
+                                                        <div class="progress-bar bg-info" role="progressbar"
+                                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+                                                            aria-valuemax="100"></div>
+                                                    </div>
+                                                </div> -->
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-hashtag fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                # Failed Arbs
+                            </div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                        {{last_day.number_of_arb_failed|intword}}
+                                    </div>
+                                </div>
+                                <div class="col">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-hashtag fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="d-sm-flex align-items-center justify-content-between mb-4" id="last_day__gas">
+        <h5 class="h5 mb-0 text-gray-800">Gas wanted</h5>
+    </div>
+
+    <div class="row">
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Total </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{last_day.gas_wanted_total|intword}}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-gas-pump fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Swaps no Arbs</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{last_day.gas_wanted_total_swaps_no_arb|intword}}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-gas-pump fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Successful Arbs
+                            </div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                        {{last_day.gas_wanted_arb_successful|intword}}
+                                    </div>
+                                </div>
+                                <!-- <div class="col">
+                                                    <div class="progress progress-sm mr-2">
+                                                        <div class="progress-bar bg-info" role="progressbar"
+                                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+                                                            aria-valuemax="100"></div>
+                                                    </div>
+                                                </div> -->
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-gas-pump fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                Failed Arbs
+                            </div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                        {{last_day.gas_wanted_arb_failed|intword}}
+                                    </div>
+                                </div>
+                                <div class="col">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-gas-pump fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="d-sm-flex align-items-center justify-content-between mb-4" id="last_day__profit">
+        <h5 class="h5 mb-0 text-gray-800">Profits</h5>
+    </div>
+
+    {% if last_day.profits_fig %}
+
+    <div class="row">
+        <div class="col-xl-12 col-lg-12">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <!-- <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Profits</h6>
+            </div> -->
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="">
+                        {{last_day.profits_fig|safe}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    {% endif %}
+
+    {% if last_day.profit_ranking %}
+    <div class="row">
+
+        <div class="col-xl-12 col-lg-12">
+            <div class="card shadow mb-12">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Arbs' ranking</h6>
+
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <table class="table" id="ranking">
+                        <thead>
+                            <tr>
+                                <th scope="col">Ranking</th>
+                                <th scope="col">Tx hash</th>
+                                <th scope="col">Profit</th>
+                                <th scope="col">Sender</th>
+                                <th scope="col">Time</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for sm in last_day.profit_ranking %}
+                            <tr>
+                                <td>{{forloop.counter}}</td>
+                                <td><a href="/osmosis/tx/{{sm.tx.hash}}" target="_blank">{{sm.tx.clean_hash}}</a>
+                                </td>
+                                <td>
+                                    {{sm.get_profit_amount_normalized|floatformat:2}}
+                                    {{sm.get_profimit_denom_normalized|slice:8}}
+                                </td>
+                                <td>
+                                    {{sm.clean_sender}}
+                                </td>
+                                <td>
+                                    {{sm.tx.block.long_ago}}
+                                </td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+
+<div id='container_last_month' class='container_tabs' style="display: none">
+
+ 
+    <div class="d-sm-flex align-items-center justify-content-between mb-4" id="last_month__amounts">
+        <h5 class="h5 mb-0 text-gray-800">Amounts</h5>
+    </div>
+
+    <div class="row">
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                # Txs </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{last_month.number_of_txs|intword}}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-hashtag fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                # Swaps no Arbs</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{last_month.number_of_txs_with_swaps_no_arbs|intword}}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-hashtag fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                # Successful Arbs
+                            </div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                        {{last_month.number_of_arb_successful|intword}}
+                                    </div>
+                                </div>
+                                <!-- <div class="col">
+                                                    <div class="progress progress-sm mr-2">
+                                                        <div class="progress-bar bg-info" role="progressbar"
+                                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+                                                            aria-valuemax="100"></div>
+                                                    </div>
+                                                </div> -->
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-hashtag fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                # Failed Arbs
+                            </div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                        {{last_month.number_of_arb_failed|intword}}
+                                    </div>
+                                </div>
+                                <div class="col">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-hashtag fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="d-sm-flex align-items-center justify-content-between mb-4" id="last_month__gas">
+        <h5 class="h5 mb-0 text-gray-800">Gas wanted</h5>
+    </div>
+
+    <div class="row">
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Total </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{last_month.gas_wanted_total|intword}}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-gas-pump fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Swaps no Arbs</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {{last_month.gas_wanted_total_swaps_no_arb|intword}}
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-gas-pump fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Successful Arbs
+                            </div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                        {{last_month.gas_wanted_arb_successful|intword}}
+                                    </div>
+                                </div>
+                                <!-- <div class="col">
+                                                    <div class="progress progress-sm mr-2">
+                                                        <div class="progress-bar bg-info" role="progressbar"
+                                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+                                                            aria-valuemax="100"></div>
+                                                    </div>
+                                                </div> -->
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-gas-pump fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Earnings (Monthly) Card Example -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                Failed Arbs
+                            </div>
+                            <div class="row no-gutters align-items-center">
+                                <div class="col-auto">
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                        {{last_month.gas_wanted_arb_failed|intword}}
+                                    </div>
+                                </div>
+                                <div class="col">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-gas-pump fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="d-sm-flex align-items-center justify-content-between mb-4" id="last_month__profit">
+        <h5 class="h5 mb-0 text-gray-800">Profits</h5>
+    </div>
+
+    {% if last_month.profits_fig %}
+
+    <div class="row">
+        <div class="col-xl-12 col-lg-12">
+            <div class="card shadow mb-4">
+                <!-- Card Header - Dropdown -->
+                <!-- <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Profits</h6>
+            </div> -->
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="">
+                        {{last_month.profits_fig|safe}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    {% endif %}
+
+    {% if last_month.profit_ranking %}
+    <div class="row">
+
+        <div class="col-xl-12 col-lg-12">
+            <div class="card shadow mb-12">
+                <!-- Card Header - Dropdown -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Arbs' ranking</h6>
+
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <table class="table" id="ranking">
+                        <thead>
+                            <tr>
+                                <th scope="col">Ranking</th>
+                                <th scope="col">Tx hash</th>
+                                <th scope="col">Profit</th>
+                                <th scope="col">Sender</th>
+                                <th scope="col">Time</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for sm in last_month.profit_ranking %}
+                            <tr>
+                                <td>{{forloop.counter}}</td>
+                                <td><a href="/osmosis/tx/{{sm.tx.hash}}" target="_blank">{{sm.tx.clean_hash}}</a>
+                                </td>
+                                <td>
+                                    {{sm.get_profit_amount_normalized|floatformat:2}}
+                                    {{sm.get_profimit_denom_normalized|slice:8}}
+                                </td>
+                                <td>
+                                    {{sm.clean_sender}}
+                                </td>
+                                <td>
+                                    {{sm.tx.block.long_ago}}
+                                </td>
+                            </tr>
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+
+
+
+
+
+
+
+
+
+<div class="row">
+    <div class="col-xl-12 col-lg-12">
+
+        <div class="card shadow mb-4" id="about_this_project">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">About this project</h6>
+            </div>
+            <div class="card-body">
+                <p>
+                    <b>MEV in fixed gas price blockchains</b>.
+                    <a href="https://github.com/flashbots/mev-research/blob/main/FRPs/active/FRP-21.md"
+                        target="_blank">Link
+                        to project description</a>
+                </p>
+
+                <p><b>Background and Problem Statement</b></p>
+                <p>As we know, MEV has been extensively studied [1], from mathematical models to data
+                    analysis applications. In most scientific papers, researchers have worked with the
+                    Ethereum blockchain almost exclusively, so extending results to other blockchains
+                    might not be trivial. Understandably, one of the most particular aspects that makes
+                    it so complex is Gas bidding.</p>
+                <p>In Ethereum, the miners pick up transactions from the mempool and propose a block
+                    with a subset of transactions in an arbitrary order. However, this arbitrary order
+                    is not random; many miners use gas to sort transactions and create new blocks since
+                    this strategy maximizes their reward. But this is not the case for all blockchains.
+                    Blockchains based on Tendermint don't take dynamic gas prices into account to
+                    prioritize transactions. They use a fixed gas price and process transactions in the
+                    same order in which the validators receive them. This difference could heavily
+                    impact the role and behavior of MEV searchers. In Blockchains with fixed gas prices,
+                    the only resource that searchers have is to recognize an MEV opportunity before
+                    other actors and respond quickly enough. This contrast could have enormous
+                    repercussions on the opportunities that MEV searchers choose to pursue. For example:
+                    What strategy do non-privileged actors use to front-run a transaction if they could
+                    not offer a higher gas price to allocate their transaction earlier in the block?</p>
+                <p>We believe the blockchains that don't use gas to prioritize transactions present MEV
+                    opportunities with their own different dynamics. As we have previously mentioned,
+                    even though MEV has been extensively studied (market designs and their implications
+                    [2], MEV in other Blockchains [3], among others), to our knowledge, there is not a
+                    full understanding of MEV in Blockchains with fixed gas price mechanisms. Therefore,
+                    we propose the following general objective of this FRP: To study the MEV
+                    opportunities in a blockchain using a fixed gas price. To contribute to this general
+                    object, we propose to study this in Terra blockchains.</p>
+                </p>
+                <br>
+                <b>References</b>
+                <li>[1] Daian, Philip, et al. "Flash boys 2.0: Frontrunning in decentralized exchanges,
+                    miner extractable value, and consensus instability." 2020 IEEE Symposium on Security
+                    and Privacy (SP). IEEE, 2020.</li>
+                <li>[2] Why your blockchain needs an MEV solution - Hasu (Flashbots)</li>
+                <li>
+                    [3] A brief Survey of MEV on Ethereum, BSC, Avalanche and Polygon in 2021 - Alex
+                    Obadia (Flashbots)
+                </li>
+                <li>[4] https://explore.flashbots.net/</li>
+
+                </p>
+
+                <p>
+                    This project was developed in the context
+                    of the <a href="https://github.com/flashbots/mev-research" target="_blank">Flashbot
+                        Research Proposal program</a>.
+
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-12 col-lg-12">
+        <div class="card shadow mb-4" id="limitations">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Limitations and considerations</h6>
+            </div>
+            <div class="card-body">
+                <p>
+                    <li>1. Data will be available to download soon!</li>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock %}
