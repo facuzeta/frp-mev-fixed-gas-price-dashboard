@@ -17,10 +17,17 @@ class Command(BaseCommand):
         last_height_on_chain = int(last_block_on_chain['height'])
         last_time_on_chain = str(last_block_on_chain['time'])
 
-        last_block_we_have = Block.objects.all().order_by('-height').first()
+        try:
+            last_block_we_have = Block.objects.all().order_by('-height').first()
+            last_block_we_have_height = last_block_we_have.height
+            last_block_we_have_timestamp = last_block_we_have.timestamp
+        except:
+            last_block_we_have_height = 0
+            last_block_we_have_timestamp = 0
+
 
         self.stdout.write(str(timezone.now())+'\t Current block on chain: '+str(last_height_on_chain)+'\t'+str(last_time_on_chain))
-        self.stdout.write(str(timezone.now())+'\t Current last block we have: '+str(last_block_we_have.height)+'\t'+str(last_block_we_have.timestamp))
+        self.stdout.write(str(timezone.now())+'\t Current last block we have: '+str(last_block_we_have_height)+'\t'+str(last_block_we_have_timestamp))
 
         for height in tqdm(range(last_height_on_chain, last_block_we_have.height+1, -1)[:MAX_BLOCKS_TO_PUSH]):
             self.stdout.write(str(timezone.now())+'\t'+str(height))

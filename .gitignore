@@ -5,3 +5,4 @@ data
 small_data
 env
 dashboard_site/terra_classic/migrations/
+dashboard_site/osmosis/migrations/
