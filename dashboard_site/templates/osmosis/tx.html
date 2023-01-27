@@ -1,0 +1,214 @@
+{% extends "./base_osmosis.html" %}
+{% load humanize %}
+{% load static %}
+{% load token_alias %}
+
+
+{% block sidebar %}
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4" id="timelines">
+    <h1 class="h3 mb-0 text-gray-800">Tx Info</h1>
+</div>
+
+<!-- Content Row -->
+<div class="row">
+
+    <!-- Area Chart -->
+    <div class="col-xl-12 col-lg-12">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <!-- <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Number of transactions over time
+                                    </h6>
+
+                                </div> -->
+            <!-- Card Body -->
+            <div class="card-body">
+                <div class="table-responsive">
+
+                    <table class="table">
+                        <thead>
+
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <th scope="col">Hash</th>
+                                <td>{{tx.hash}} (<a target="_blank" href="https://www.mintscan.io/osmosis/txs/{{tx.hash}}">link mintscan.io</a>)</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Timeline</th>
+                                <td>{{tx.block.timestamp}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Block</th>
+                                <td><a target="_blank" href="/osmosis/block/{{tx.block.height}}">{{tx.block.height}}</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Order in block</th>
+                                <td>{{tx.order}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Success</th>
+                                <td>{% if tx.success %}<i class="fa fa-check" style='color:rgb(112, 191, 43)' aria-hidden="true"></i>{% else %} <i class="fa fa-times" style='color:red'  aria-hidden="true"></i>{%endif %}</td>
+
+                            </tr>
+                            <tr>
+                                <th scope="col">Fee</th>
+                                <td>{{tx.fee_amount}} {{tx.fee_denom}}</td>
+
+                            </tr>
+                            <tr>
+                                <th scope="col">Gas</th>
+                                <td> {{tx.gas_used}}/{{tx.gas_wanted}}</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4" id="timelines">
+    <h1 class="h3 mb-0 text-gray-800">Messages</h1>
+</div>
+
+<!-- Content Row -->
+<div class="row">
+
+    <!-- Area Chart -->
+    <div class="col-xl-12 col-lg-12">
+        <div class="card shadow mb-4">
+            <!-- Card Header - Dropdown -->
+            <!-- <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Number of transactions over time
+                                    </h6>
+
+                                </div> -->
+            <!-- Card Body -->
+            <div class="card-body">
+                <div class="table-responsive">
+                    {% for msg in tx.swapmsg_set.all%}
+
+                        <table class="table">
+                            <thead>
+
+                            </thead>
+
+                            <tbody>
+                                <tr>
+                                    <th>Order</th>
+                                    <td>{{msg.order}}</td>
+                                </tr>
+
+                                <tr>
+                                    <th>Arbitrage</th>
+                                    <td>{% if msg.arb %}<i class="fa fa-check" style='color:rgb(112, 191, 43)' aria-hidden="true"></i>{% else %} <i class="fa fa-times" style='color:red'  aria-hidden="true"></i>{%endif %}</td>
+                                </tr>
+
+                                <tr>
+                                    <th>Sender</th>
+                                    <td>{{msg.sender|slice:"2:-2"}}</td>
+                                </tr>
+                                <tr>
+                                    {% if msg.routes.token_in%}
+                                    <th>Token in</th>
+                                    <td>{{msg.routes.token_in.amount}} {{msg.routes.token_in.denom|slice:16}}{% if msg.routes.token_in.denom|length > 16 %}...{% endif %} </td>
+                                    {% endif %}
+
+                                    {% if msg.routes.token_out%}
+                                    <th>Token out</th>
+                                    <td>{{msg.routes.token_out.amount}} {{msg.routes.token_out.denom|slice:16}}{% if msg.routes.token_out.denom|length > 16 %}...{% endif %} </td>
+                                    {% endif %}
+
+                                </tr>
+                                <tr>
+                                    {% if msg.routes.token_out_min_amount %}
+                                    <th>Token out min</th>
+                                    <td>{{msg.routes.token_out_min_amount}}</td>
+                                    {% endif %}
+
+                                    {% if msg.routes.token_in_max_amount %}
+                                    <th>Token in max</th>
+                                    <td>{{msg.routes.token_in_max_amount}}</td>
+                                    {% endif %}
+
+
+                                </tr>
+                                <tr>
+                                        <th>Routes</th>
+                                        <td>
+                                        <table class="table">
+                                            <thead>
+                                                <th>Pool id</th>
+                                                <th>Out</th>
+                                            </thead>
+                
+                                            <tbody>
+                                            {% for r in msg.routes.routes%}
+                                        <tr>
+                                                <td>{{r.pool_id}}</td>
+                                                <td> <div title="{{r.token_out_denom}}"> {{r.token_out_denom|token_alias}}</div> </td>
+                                        </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                {% if msg.routes_result %}
+
+                                <tr>
+                                    <th>Routes Results</th>
+                                    <td>
+                                        <table class="table">
+                                            <thead>
+                                                <th>Pool id</th>
+                                                <th>In</th>
+                                                <th>Out</th>
+
+                                            </thead>
+                
+                                            <tbody>
+                                            {% for r in msg.routes_result%}
+                                        <tr>
+                                                <td>{{r.pool_id}}</td>
+                                                <td><div title="{{r.token_in_denom}}"> {{r.token_in_amount}} {{r.token_in_denom|token_alias}}</div> </td>
+                                                <td><div title="{{r.token_out_denom}}"> {{r.token_out_amount}} {{r.token_out_denom|token_alias}}</div></td>
+                                        </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% if msg.profit_amount %}
+                                <tr>
+                                    <th>Profit</th>
+                                    
+                                    <td>{{msg.get_profit_amount_normalized}} {{msg.get_profimit_denom_normalized}}</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    {% endfor%} 
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

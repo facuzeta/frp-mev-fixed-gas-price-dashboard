@@ -1,0 +1,145 @@
+{% extends "./base_osmosis.html" %}
+{% load humanize %}
+{% load static %}
+{% load token_alias %}
+
+{% block sidebar %}
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4" id="timelines">
+    <h1 class="h3 mb-0 text-gray-800">Block {{height}}</h1>
+</div>
+
+<!-- Content Row -->
+<div class="row">
+    <!-- Area Chart -->
+    <div class="col-xl-12 col-lg-12">
+        <div class="card shadow mb-4">
+
+            <div class="card-body">
+                <div class="table-responsive">
+
+                    <table class="table">
+                        <thead>
+
+                        </thead>
+
+                        <tbody>
+                            <tr>
+                                <th scope="col">Timestamp</th>
+                                <td>{{block_.timestamp}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col"># txs</th>
+                                <td>{{block_.number_of_txs}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col"># txs with swaps</th>
+                                <td>{{block_.number_of_txs_with_swaps}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col"># arbs</th>
+                                <td>{{block_.number_of_arbs}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col"># successful arb</th>
+                                <td>{{block_.number_of_arb_successful}}</td>
+                            </tr>
+                            <tr>
+
+                                <th scope="col">Profit</th>
+                                <td>
+                                    <table class="table">
+                                        <thead>
+                                            <th>Token</th>
+                                            <th>Amount</th>
+
+                                        </thead>
+            
+                                        <tbody>
+                                        {% for token, amount in block_.get_profit.items%}
+                                    <tr><th>{{token|token_alias}}</th><td>{{amount|floatformat:4}}</td></tr>
+                                    {% endfor %}
+                                    </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Total gas</th>
+                                <td>{{block_.gas_wanted_total}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Total gas arb</th>
+                                <td>{{block_.gas_wanted_arb}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="col">Total gas successfull arb</th>
+                                <td>{{block_.gas_wanted_arb_successful}}</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-sm-flex align-items-center justify-content-between mb-4" id="timelines">
+    <h4 class="h4 mb-0 text-gray-800">Txs in Block*</h4>
+
+</div>
+
+<!-- Content Row -->
+<div class="row">
+    <!-- Area Chart -->
+    <div class="col-xl-12 col-lg-12">
+        <div class="card shadow mb-4">
+
+            <div class="card-body">
+                <div class="table-responsive">
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Order</th>
+                                <th>Hash</th>
+                                <th>Success</th>
+                                <th>Arb  </th>
+                                
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+                            {% for tx in block_.txswap_set.all%}
+                            <tr>
+                                <td>{{tx.order}}</td>
+                                <td><a target="_blank" href="/osmosis/tx/{{tx.hash}}">{{tx.clean_hash}}</a></td>
+                                <td>{% if tx.success %}<i class="fa fa-check" style='color:rgb(112, 191, 43)' aria-hidden="true"></i>{% else %} <i class="fa fa-times" style='color:red'  aria-hidden="true"></i>{%endif %}</td>
+                                <td>{% if tx.is_arb %}<i class="fa fa-check" style='color:rgb(112, 191, 43)' aria-hidden="true"></i>{% else %} <i class="fa fa-times" style='color:red'  aria-hidden="true"></i>{%endif %}</td>
+                                <td>{{tx.number_of_msg}}</td>
+                            </tr>
+                            {% endfor %}
+
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p>*only Swaps</p>
+
+
+
+
+{% endblock %}
