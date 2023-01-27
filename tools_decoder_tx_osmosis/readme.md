@@ -1,0 +1,1 @@
+Run script_install_go_decoder.sh to compile a modified version of the osmosis code that allows us to decode base64 tx
