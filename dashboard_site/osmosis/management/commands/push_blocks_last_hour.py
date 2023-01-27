@@ -29,7 +29,7 @@ class Command(BaseCommand):
         self.stdout.write(str(timezone.now())+'\t Current block on chain: '+str(last_height_on_chain)+'\t'+str(last_time_on_chain))
         self.stdout.write(str(timezone.now())+'\t Current last block we have: '+str(last_block_we_have_height)+'\t'+str(last_block_we_have_timestamp))
 
-        for height in tqdm(range(last_height_on_chain, last_block_we_have.height+1, -1)[:MAX_BLOCKS_TO_PUSH]):
+        for height in tqdm(range(last_height_on_chain, last_block_we_have_height+1, -1)[:MAX_BLOCKS_TO_PUSH]):
             self.stdout.write(str(timezone.now())+'\t'+str(height))
             try:
                 res = get_data_and_populate(height)
