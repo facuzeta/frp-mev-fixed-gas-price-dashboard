@@ -9,6 +9,7 @@
 cd /code/dashboard_site/;
 python manage.py makemigrations;
 python manage.py makemigrations terra_classic;
+python manage.py makemigrations osmosis;
 python manage.py migrate;
 python manage.py createcachetable;
 ```
