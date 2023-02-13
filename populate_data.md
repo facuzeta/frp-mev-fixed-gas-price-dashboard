@@ -13,7 +13,7 @@ python manage.py migrate;
 python manage.py createcachetable;
 ```
 
-3. get and populate the small data
+3. Get and populate the Terra Classic data (this example uses small data)
 ```bash
 mkdir -p /code/small_data/;
 cd /code/small_data/;

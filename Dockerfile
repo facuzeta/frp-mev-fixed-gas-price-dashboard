@@ -30,4 +30,3 @@ COPY dashboard_site dashboard_site
 # add to crontab the script that get osmosis data every hour
 COPY run_script_per_hour_cron.sh .
 RUN /code/run_script_per_hour_cron.sh
-CMD ["service", "cron", "start"]
