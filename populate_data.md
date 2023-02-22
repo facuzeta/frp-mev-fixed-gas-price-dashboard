@@ -14,7 +14,9 @@ python manage.py migrate;
 python manage.py createcachetable;
 ```
 
-3. Get and populate the Terra Classic data (this example uses small data)
+3. Get and populate the Terra Classic data: 
+
+Small dataset (~350 MB):
 ```bash
 mkdir -p /code/small_data/;
 cd /code/small_data/;
@@ -24,6 +26,20 @@ wget https://frp-terra.s3.us-east-2.amazonaws.com/subset_small/terra_classic_dum
 unzip terra_classic_dump_txs.csv.zip;
 psql postgres://postgres:postgres@db:5432/postgres;
 ```
+
+Big dataset (~7.5 GB):
+
+```bash
+mkdir -p /code/small_data/;
+cd /code/small_data/;
+wget https://frp-terra.s3.us-east-2.amazonaws.com/terra_classic_dump_blocks.csv;
+wget https://frp-terra.s3.us-east-2.amazonaws.com/terra_classic_dump_arbs.csv;
+wget https://frp-terra.s3.us-east-2.amazonaws.com/terra_classic_dump_txs.csv.zip; 
+unzip terra_classic_dump_txs.csv.zip;
+psql postgres://postgres:postgres@db:5432/postgres;
+```
+
+
 
 4. Then copy in psql the followings commands:
 ```
